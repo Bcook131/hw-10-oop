@@ -11,7 +11,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
 const employees = [];
-const initial = ()=> {
+const initial = () => {
     inquirer.prompt([
         {
           type: "input",
@@ -34,17 +34,15 @@ const initial = ()=> {
           name: "officeNumber",
         },
       ])
-      .then((res) => {
-        const newManager = new Manager(res.name,res.id,res.email,res.officeNumber);
+      .then((response) => {
+        const newManager = new Manager(response.name,response.id,response.email,response.officeNumber);
         employees.push(newManager);
-        addMore()
+        moreEmployees()
     
       });
 }
-const empQuestions = ()=>{
-    inquirer
-  .prompt({
-
+const employeeQuestions = () => {
+    inquirer.prompt({
     type: "list",
     message: "What type of employee would you like to use?",
     choices: ["Engineer", "Intern"],
@@ -53,8 +51,7 @@ const empQuestions = ()=>{
   .then((answers) => {
     if(answers.role === "Engineer") {
     {
-      inquirer
-        .prompt([
+      inquirer.prompt([
           {
             type: "input",
             message: "What is engineer's name?",
@@ -76,10 +73,10 @@ const empQuestions = ()=>{
             name: "github",
           },
         ])
-        .then((res) => {
-          const newEngineer = new Engineer(res.name,res.id,res.email,res.github);
+        .then((response) => {
+          const newEngineer = new Engineer(response.name,response.id,response.email,response.github);
           employees.push(newEngineer);
-          addMore();
+          moreEmployees();
         });
     }
   } else if(answers.role === "Intern"){
@@ -106,28 +103,28 @@ const empQuestions = ()=>{
              name: "school",
          }
         ]    
-        ).then(res=>{
-            const newIntern = new Intern(res.name, res.id, res.email, res.school)
+        ).then(response => {
+            const newIntern = new Intern(response.name, response.id, response.email, response.school)
             employees.push(newIntern);
-            addMore();
+            moreEmployees();
         })
     }}
   });
 
 }
-const addMore = ()=>{
+const moreEmployees = ()=>{
     inquirer.prompt({
         type: "confirm",
         message: "Add more employees??",
-        name: "addMore",
+        name: "moreEmployees",
         default: true
     }).then((answer)=>{
-        if(answer.addMore === true){
-            empQuestions()
+        if(answer.moreEmployees === true){
+            employeeQuestions()
         }else{
             console.log("Your results will be located in the output folder.")
-            const renderedTeam= render(employees)
-            fs.writeFile(outputPath,renderedTeam,function(err){
+            const createdTeam = render (employees)
+            fs.writeFile(outputPath, createdTeam, function(err){
                 if(err) throw err
             } )
 
